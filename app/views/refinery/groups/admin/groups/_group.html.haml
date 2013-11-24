@@ -1,0 +1,15 @@
+%li.clearfix.record{class: cycle("on", "on-hover"), id: dom_id(group)}
+  %span.title= group.name
+  %span.preview= t('.preview', count: group.users.count)
+  %span.actions
+    - unless group.is_guest_group? || !current_refinery_user.is_group_superadmin?
+      = link_to refinery_icon_tag("delete.png"), refinery.groups_admin_group_path(group),
+        class: "cancel confirm-delete delete_group",
+        title: t('.delete'),
+        data: {confirm: t('message', scope: 'refinery.admin.delete', title: group.name)},
+        method: :delete
+      = link_to refinery_icon_tag("application_edit.png"), refinery.edit_groups_admin_group_path(group),
+        title: t('.edit')
+    = link_to refinery_icon_tag("application_go.png"), refinery.groups_admin_group_path(group),
+      class: "show_group",
+      title: t('.view_live_html')

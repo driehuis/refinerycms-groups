@@ -1,0 +1,2 @@
+var users_html = <%= raw render('refinery/groups/admin/groups/selection_users', :selecting => true).inspect %>
+$(".users_selection").replaceWith(users_html);

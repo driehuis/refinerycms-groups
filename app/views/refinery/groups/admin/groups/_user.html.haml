@@ -1,0 +1,18 @@
+%li.clearfix.record{id: "sortable_#{user.id}", class: cycle("on", "on-hover")}
+  %span.title
+    = check_box_tag "user_check_item", user.id if selecting
+    %strong= user.username
+    %span.preview= user.email
+    - if user.has_role?(Refinery::Groups.admin_role)
+      %span.groupadmin= Refinery::Groups.admin_role 
+    %span.actions
+      - unless selecting
+        = mail_to user.email, refinery_icon_tag('email_go.png'), :title => t('activerecord.attributes.refinery/user.email')
+        = link_to refinery_icon_tag('application_edit.png'), refinery.edit_groups_admin_group_user_path(@group, user),
+          class: "edit_user",
+          title: t('refinery.admin.users.edit')
+        = link_to refinery_icon_tag('delete.png'), refinery.groups_admin_group_user_path(@group, user),
+          class: "cancel confirm-delete delete_user",
+          title: t('refinery.admin.users.delete'),
+          method: :delete,
+          data: {confirm: t('message', scope: 'refinery.admin.delete', title: user.username)} unless user.eql?(current_refinery_user)

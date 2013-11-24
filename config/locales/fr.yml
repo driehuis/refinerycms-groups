@@ -1,0 +1,49 @@
+fr:
+  refinery:
+    plugins:
+      groups:
+        title: Groupes
+    groups:
+      groupadmin: Admin
+      admin:
+        errors:
+          cannot_create: Vous ne pouvez pas créer de groupe.
+          cannot_find: Désolé, ce groupe n'existe pas.
+          cannot_edit:  Désolé, vous n'êtes pas autorisé à modifier ce groupe.
+          cannot_destroy: Désolé, vous ne pouvez pas supprimer ce groupe.
+          cannot_show: Désolé, vous n'êtes pas habilité à poursuivre cette action.
+        groups:
+          actions:
+            create_new: Créer un nouveau groupe
+            reorder: Réordonner les groupes
+            reorder_done: Fin de réordonnancement des groupes
+          records:
+            title: Groupes
+            sorry_no_results: "Désolé ! Aucun résultat."
+            no_items_yet: 'Il n''y a actuellement aucun groupe. Cliquer sur "Créer un nouveau groupe" pour créer votre premier groupe.'
+          group:
+            view_live_html: Voir ce groupe <br/><em>(Ouvre une nouvelle fenêtre)</em>
+            edit: Modifier ce groupe
+            delete: Supprimer définitivement ce groupe
+            add_user: Ajouter un membre à ce groupe
+            preview:
+              zero: "n'a aucun membre"
+              one: "a 1 membre"
+              other: "a %{count} membres"
+          show:
+            expired_since: "Expiré depuis %{expiration_date}"
+            expires_at: "Expire dans %{expiration_date}"
+            users:
+              zero: Aucun membre
+              one: 1 membre
+              other: "%{count} membres"
+    users:  
+      groups:
+        show:
+          other: Autres groupes
+  activerecord:
+    models:
+      refinery/groups/group: Groupe
+    attributes:
+      refinery/groups/group:
+        name: Name

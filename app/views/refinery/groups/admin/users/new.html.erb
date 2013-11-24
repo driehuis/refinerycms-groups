@@ -1,0 +1,10 @@
+<section id='records'>
+  <%= render 'form' %>
+  <br>
+  <% if @group.name != "guest" && (current_refinery_user.has_role?("Refinery") || current_refinery_user.has_role?("Superuser")) && @users.any? %>
+    <h2>
+      choose the exsitings
+    </h2>
+    <%= render "refinery/groups/admin/groups/users", :selecting => true %>
+  <% end %>
+</section>

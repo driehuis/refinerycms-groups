@@ -1,0 +1,19 @@
+
+- content_for :actions do
+  %section{id: "actions"}
+    %ul
+      %li= link_to t('refinery.groups.admin.groups.group.add_user'), refinery.new_groups_admin_group_user_path(@group), id: "add_user"
+      - unless @group.is_guest_group? || !current_refinery_user.is_group_superadmin? 
+        %li= link_to t('refinery.groups.admin.groups.group.delete'), refinery.groups_admin_group_path(@group), 
+              title: t('refinery.groups.admin.groups.group.delete'),
+              data: {confirm: t('message', scope: 'refinery.admin.delete', title: @group.name)},
+              method: :delete,
+              id: "delete_group"
+        %li= link_to t('refinery.groups.admin.groups.group.edit'), refinery.edit_groups_admin_group_path(@group), title: t('refinery.groups.admin.groups.group.edit'), id: "edit_group"
+
+
+.clearfix
+
+= form_tag refinery.add_users_groups_admin_group_path(@group) do
+  = hidden_field_tag "user_ids", "", :id => "user_ids" if selecting
+  = render "users", selecting: selecting

@@ -1,0 +1,49 @@
+en:
+  refinery:
+    plugins:
+      groups:
+        title: Groups
+    groups:
+      groupadmin: GroupAdmin
+      admin:
+        errors:
+          cannot_create: Sorry! Can't create a new group.
+          cannot_find: Sorry! Can't find this group.
+          cannot_edit:  Sorry! You can't edit this group.
+          cannot_destroy: Sorry! You can't delete this group.
+          cannot_show: Sorry! You aren't allowed to access this page.
+        groups:
+          actions:
+            create_new: Add New Group
+            reorder: Reorder Groups
+            reorder_done: Done Reordering Groups
+          records:
+            title: Groups
+            sorry_no_results: Sorry! There are no results found.
+            no_items_yet: There are no Groups yet. Click "Add New Group" to add your first group.
+          group:
+            view_live_html: View this group live <br/><em>(opens in a new window)</em>
+            edit: Edit this group
+            delete: Remove this group
+            add_user: Add a new user to this group
+            preview:
+              zero: "has no user"
+              one: "has 1 user"
+              other: "has %{count} users"
+          show:
+            expired_since: "expired since %{expiration_date}"
+            expires_at: "expires in %{expiration_date}"
+            users:
+              zero: No user
+              one: 1 user
+              other: "%{count} users"
+    users:
+      groups:
+        show:
+          other: Other Groups
+  activerecord:
+    models:
+      refinery/groups/group: Group
+    attributes:
+      refinery/groups/group:
+        name: Name

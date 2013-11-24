@@ -3,6 +3,7 @@
 .sass-cache
 capybara-*.html
 .rspec
+.ruby-gemset
 .rvmrc
 /.bundle
 /vendor/bundle
@@ -12,8 +13,12 @@ capybara-*.html
 /public/system/*
 /coverage/
 /spec/tmp/*
+/spec/log/*
+dummy_dev
+dummy_test
 **.orig
 rerun.txt
 pickle-email-*.html
 .project
 config/initializers/secret_token.rb
+Gemfile.lock

@@ -1,0 +1,26 @@
+<%= form_for [refinery, :groups_admin, @group] do |f| -%>
+  <%= render '/refinery/admin/error_messages',
+              :object => @group,
+              :include_object_name => true %>
+
+  
+  <div class='field'>
+    <%= f.label :name -%>
+    <%= f.text_field :name  -%>
+  </div>
+
+  <div>
+    <%= f.label :description %>
+    <%= f.text_area :description, :rows => 10, :cols => 60 %>
+  </div>
+
+  <div>
+    <%= f.label :expiration_date %>
+    <%= f.date_select(:expiration_date, :start_year => DateTime.now.year) %>
+  </div>
+  
+  <%= render '/refinery/admin/form_actions', :f => f,
+             :continue_editing => false,
+             :delete_title => t('delete', :scope => 'refinery.groups.admin.groups.group'),
+             :delete_confirmation => t('message', :scope => 'refinery.admin.delete', :title => @group.name) %>
+<% end -%>

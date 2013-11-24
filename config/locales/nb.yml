@@ -1,0 +1,27 @@
+nb:
+  refinery:
+    plugins:
+      groups:
+        title: Groups
+    groups:
+      admin:
+        groups:
+          actions:
+            create_new: Lag en ny Group
+            reorder: Endre rekkefølgen på Groups
+            reorder_done: Ferdig å endre rekkefølgen Groups
+          records:
+            title: Groups
+            sorry_no_results: Beklager! Vi fant ikke noen resultater.
+            no_items_yet: Det er ingen Groups enda. Klikk på "Lag en ny Group" for å legge til din første group.
+          group:
+            view_live_html: Vis hvordan denne group ser ut offentlig <br/><em>(åpner i et nytt vindu)</em>
+            edit: Rediger denne group
+            delete: Fjern denne group permanent
+      groups:
+        show:
+          other: Andre Groups
+  activerecord:
+    attributes:
+      'refinery/groups/group':
+        name: Name

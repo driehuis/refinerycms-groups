@@ -1,0 +1,28 @@
+es:
+  refinery:
+    plugins:
+      groups:
+        title: Groups
+#        article: masculino/femenino
+    groups:
+      admin:
+        groups:
+          actions:
+            create_new: Crear nuevo group
+            reorder: Reordenar groups
+            reorder_done: Reordenación de groups completada
+          records:
+            title: Groups
+            sorry_no_results: Lo siento, no hay resultados
+            no_items_yet: No hay groups todavía. Pulsa en "Crear nuevo Group" para crear tu primer group.
+          group:
+            view_live_html: Ver este group como abierto al público <br/><em>(abre en ventana nueva)</em>
+            edit: Editar este group
+            delete: Borrar este group para siempre
+      groups:
+        show:
+          other: Otros groups
+  activerecord:
+    attributes:
+      'refinery/groups/group':
+        name: Name

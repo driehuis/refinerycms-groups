@@ -1,0 +1,11 @@
+#records
+  %h2= @group.name
+  - unless @group.is_guest_group? || @group.expiration_date.nil?
+    - if @group.expired?
+      %h3= t('.expired_since', expiration_date: distance_of_time_in_words_to_now(@group.expiration_date))
+    - else
+      %h3= t('.expires_at', expiration_date: distance_of_time_in_words_to_now(@group.expiration_date)) 
+  %p{id: "group_users_count"}= t('.users', count: @group.users.count)
+  %p.description= @group.description
+  = render "show_users", selecting: false
+= yield :actions

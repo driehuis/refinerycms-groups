@@ -5,13 +5,13 @@ module Refinery
 
         crudify :'refinery/groups/group', :title_attribute => 'name', :xhr_paging => true
         
-        before_filter :find_current_group,          :only => [:show, :edit]
-        before_filter :find_group,                  :only => [:add_users, :set_admin, :destroy]
+        before_filter :find_group,                  :except => [:index, :new, :create]
+        before_filter :find_users,                  :only => [:show, :edit, :update]
         before_filter :redirect_if_not_admin,       :only => :index
         before_filter :redirect_if_cannot_show,     :only => [:show, :edit, :destroy]
         before_filter :redirect_if_cannot_destroy,  :only => :destroy
         before_filter :redirect_if_cannot_edit,     :only => :edit
-        before_filter :redirect_if_cannot_reate,    :only => :new
+        before_filter :redirect_if_cannot_create,   :only => [:new, :create]
 
         def index
           if params[:search]
@@ -21,26 +21,6 @@ module Refinery
           end
         end
 
-
-        def find_all_groups(search = nil)
-          if current_refinery_user.is_group_superadmin?
-            @groups = Refinery::Groups::Group.paginate(:page => params[:page])
-          elsif current_refinery_user.has_role?(Refinery::Groups.admin_role)
-            @groups = Refinery::Groups::Group.where(:name => current_refinery_user.group.name).paginate(:page => params[:page])
-          end
-        end
-
-
-        def show
-          @users = @group.users.order(:email).paginate(:page => params[:page])
-        end
-
-        
-        def edit
-          @users = @group.users.paginate(:page => params[:page])
-        end
-
-
         def add_users
           user_ids = params[:user_ids].split(",")
           @users = Refinery::User.where(:id => user_ids)
@@ -48,7 +28,6 @@ module Refinery
           @group.save
           redirect_to refinery.groups_admin_group_path(@group)
         end
-
 
         def set_admin
           @user = Refinery::User.find(params[:user_id])
@@ -61,7 +40,6 @@ module Refinery
 
 
       private
-
         
         def find_group
           @group = Refinery::Groups::Group.find(params[:id])
@@ -69,17 +47,17 @@ module Refinery
             flash[:error] = t("refinery.groups.admin.groups.records.sorry_no_results")
             redirect_to refinery.groups_admin_groups_path and return
           end
-        end
-
-
-        def find_current_group
-          if current_refinery_user.is_group_admin?
-            @group = current_refinery_user.group
-          else
-            find_group
+          if current_refinery_user.is_group_admin? && @group != current_refinery_user.group
+            redirect_to refinery.groups_admin_group_path(current_refinery_user.group) and return
           end
         end
-
+        
+        def find_users
+          unless @group.nil?
+            @users = @group.users.order(:username).paginate(:page => params[:page])
+          end
+        end
+        
 
         def redirect_if_cannot_show
           redirect_to refinery.groups_admin_groups_path, :flash => {:error => t("refinery.groups.admin.errors.cannot_find")} unless current_refinery_user.can_admin_group?(@group) 

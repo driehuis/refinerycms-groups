@@ -7,5 +7,17 @@
       %h3= t('.expires_at', expiration_date: distance_of_time_in_words_to_now(@group.expiration_date)) 
   %p{id: "group_users_count"}= t('.users', count: @group.users.count)
   %p.description= @group.description
-  = render "show_users", selecting: false
-= yield :actions
+  
+  #users
+    = render "show_users", selecting: false
+
+%section{id: "actions"}
+  %ul
+    %li= link_to t('refinery.groups.admin.groups.group.add_user'), refinery.new_groups_admin_group_user_path(@group), id: "add_user"
+    - unless @group.is_guest_group? || !current_refinery_user.is_group_superadmin? 
+      %li= link_to t('refinery.groups.admin.groups.group.delete'), refinery.groups_admin_group_path(@group), 
+            title: t('refinery.groups.admin.groups.group.delete'),
+            data: {confirm: t('message', scope: 'refinery.admin.delete', title: @group.name)},
+            method: :delete,
+            id: "delete_group"
+      %li= link_to t('refinery.groups.admin.groups.group.edit'), refinery.edit_groups_admin_group_path(@group), title: t('refinery.groups.admin.groups.group.edit'), id: "edit_group"

@@ -7,4 +7,8 @@ Refinery::Groups.configure do |config|
   
   # Role of users who are allowed to manager all groups
   # config.superadmin_role = <%= Refinery::Groups.superadmin_role.inspect %>
+  
+  # A reminder may be sent (once) several days before expiration.
+  # 0 to disable
+  # config.reminder = <%= Refinery::Groups.reminder.inspect %>
 end

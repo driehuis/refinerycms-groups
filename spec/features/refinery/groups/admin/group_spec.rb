@@ -4,8 +4,8 @@ require "spec_helper"
 describe "Group management :" do
   
   before do
-    @group1 = create(:group, name: 'GroupSpec1', expiration_date: 10.days.from_now)
-    @group2 = create(:group, name: 'GroupSpec2', expiration_date: 10.days.ago)
+    @group1 = create(:group, name: 'GroupSpec1', expires_on: 10.days.from_now)
+    @group2 = create(:group, name: 'GroupSpec2', expires_on: 10.days.ago)
     5.times { |i| instance_variable_set("@user#{i}", create(:user))}
     @group1.add_user @user1
     @group2.add_users [@user2, @user3]

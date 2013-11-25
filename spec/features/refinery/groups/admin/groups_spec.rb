@@ -9,8 +9,8 @@ describe "Groups management :" do
       refinery_login_with user
   
       before do
-         @group1 = create(:group, name: 'GroupAdminSpec1', expiration_date: 10.days.from_now)
-         @group2 = create(:group, name: 'GroupAdminSpec2', expiration_date: 10.days.ago)
+         @group1 = create(:group, name: 'GroupAdminSpec1', expires_on: 10.days.from_now)
+         @group2 = create(:group, name: 'GroupAdminSpec2', expires_on: 10.days.ago)
          @group3 = create(:group, name: 'GroupAdminSpec3')
          5.times { |i| instance_variable_set("@user#{i}", create(:user))}
          @group2.add_user @user1
@@ -76,7 +76,7 @@ describe "Groups management :" do
           it { should have_content(@user1.username) } 
           it { should have_content(@user1.email) } 
           it { should have_selector("#sortable_#{@user1.id} span.groupadmin") } 
-          it { should have_content(Refinery::Groups.admin_role) }
+          it { should have_content(I18n.t('refinery.groups.groupadmin')) }
 
         end
     
@@ -198,8 +198,8 @@ describe "Groups management :" do
     refinery_login_with :refinery_groupadmin
     
     before do
-       @group1 = create(:group, name: 'GroupAdminSpec1', expiration_date: 15.days.from_now)
-       @group2 = create(:group, name: 'GroupAdminSpec2', expiration_date: 10.days.from_now)
+       @group1 = create(:group, name: 'GroupAdminSpec1', expires_on: 15.days.from_now)
+       @group2 = create(:group, name: 'GroupAdminSpec2', expires_on: 10.days.from_now)
        5.times { |i| instance_variable_set("@user#{i}", create(:user))}
        @group1.add_users [@user1, @user2, @user3, logged_in_user]
        @group2.add_user @user4
@@ -277,8 +277,8 @@ describe "Groups management :" do
     refinery_login_with :refinery_user
     
     before do
-       @group1 = create(:group, name: 'GroupAdminSpec1', expiration_date: 10.days.from_now)
-       @group2 = create(:group, name: 'GroupAdminSpec2', expiration_date: 10.days.from_now)
+       @group1 = create(:group, name: 'GroupAdminSpec1', expires_on: 10.days.from_now)
+       @group2 = create(:group, name: 'GroupAdminSpec2', expires_on: 10.days.from_now)
        5.times { |i| instance_variable_set("@user#{i}", create(:user))}
        @group1.add_users [@user1, @user2, @user3, logged_in_user]
        @group2.add_user @user4

@@ -1,17 +1,20 @@
-#records
+%section{id: dom_id(@group)}
   %h2= @group.name
-  - unless @group.is_guest_group? || @group.expiration_date.nil?
+  - unless @group.is_guest_group? || @group.expires_on.nil?
     - if @group.expired?
-      %h3= t('.expired_since', expiration_date: distance_of_time_in_words_to_now(@group.expiration_date))
+      %h3= t('.expired_since', expires_on: distance_of_time_in_words_to_now(@group.expires_on))
     - else
-      %h3= t('.expires_at', expiration_date: distance_of_time_in_words_to_now(@group.expiration_date)) 
+      %h3= t('.expires_on', expires_on: distance_of_time_in_words_to_now(@group.expires_on)) 
   %p{id: "group_users_count"}= t('.users', count: @group.users.count)
   %p.description= @group.description
   
-  #users
-    = render "show_users", selecting: false
+%section{id: "records"}
+  - if @users.any?
+    .pagination_container{style: "min-height: 246px;"}
+      %ul{style: "padding-left:0px;"}
+        = render partial: 'refinery/groups/admin/users/user', collection: @users
 
-%section{id: "actions"}
+%aside{id: "actions"}
   %ul
     %li= link_to t('refinery.groups.admin.groups.group.add_user'), refinery.new_groups_admin_group_user_path(@group), id: "add_user"
     - unless @group.is_guest_group? || !current_refinery_user.is_group_superadmin? 

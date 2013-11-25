@@ -4,7 +4,7 @@ module Refinery
       
       self.table_name = 'refinery_groups'
 
-      attr_accessible :name, :position, :description, :expiration_date
+      attr_accessible :name, :position, :description, :expires_on
 
       validates :name, :presence => true, :uniqueness => true
 
@@ -28,7 +28,11 @@ module Refinery
       end
       
       def expired?
-        expiration_date < Time.zone.today
+        expires_on > Time.zone.today
+      end
+      
+      def soon_expired?
+        expires_on > Time.zone.today - Refinery::Groups.reminder.to_i
       end
      
       def is_guest_group?

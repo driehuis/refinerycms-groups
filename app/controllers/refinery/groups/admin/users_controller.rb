@@ -2,104 +2,69 @@ module Refinery
   module Groups
     module Admin
       class UsersController < ::Refinery::AdminController
-        crudify :'refinery/user',
-              :order => 'username ASC',
-              :title_attribute => 'username',
-              :xhr_paging => true
+        
+        crudify :'refinery/user', :order => 'username ASC', :title_attribute => 'username', :xhr_paging => true
 
         before_filter :find_group
-        before_filter :find_all_guest_users, :only => :new
-        before_filter :has_admin, :only => [:new, :edit]
-
-        def index
-          @users = Refinery::Groups::Group.find(params[:group_id]).users.paginate(:page => params[:page])
-        end
-
+        before_filter :find_user,                               only: [:edit, :destroy]
+        before_filter :redirect_to_group_show,                  only: [:index, :show]
+        before_filter :redirect_if_cannot_destroy,              only: [:destroy]
+        before_filter :redirect_unless_user_editable!,          only: [:edit, :update]
+        before_filter :redirect_if_cannot_edit,                 only: [:edit, :update]
+        before_filter :exclude_password_assignment_when_blank!, only: [:update]
+        before_filter :find_guests,                             only: [:new, :create]
+        
+        
         def new
           @user = Refinery::User.new
         end
-
-        def edit
-          redirect_unless_user_editable!
-        end
-
+        
         def create
-    
-          if params[:cancel]
-            redirect_to refinery.groups_admin_group_path(current_refinery_user.group), :notice => t('canceled') and return 
-          end
-    
+          redirect_to refinery.groups_admin_group_path(@group), :notice => t('canceled') and return if params[:cancel]
           @user = Refinery::User.new params[:user]
-          if @user.group && @user.group.name != "guest"
-            @user.roles << Refinery::Role.find_by_title("Member")
-          end
-          if params[:admin]
-            @user.roles << Refinery::Role.find_by_title("GroupAdmin")
-          end
-
+          @user.add_role Refinery::Groups.admin_role if params[:admin]
           if @user.save
-            redirect_to refinery.groups_admin_group_path(@user.group),
-              :notice => t('created', :what => @user.username, :scope => 'refinery.crudify')
+            create_successful
           else
-            @group = Refinery::Groups::Group.find(params[:user][:group_id])
-            find_all_guest_users
-            render :action => 'new'
+            create_failed
           end
         end
-
+        
         def update
-    
-          if params[:cancel]
-            redirect_to refinery.groups_admin_group_path(current_refinery_user.group), :notice => t('canceled') and return 
-          end
-    
-          redirect_unless_user_editable!
-          @user = find_user
-    
-           unless @group.name.eql?("guest") || (current_refinery_user.eql?(@user) && current_refinery_user.has_role?('GroupAdmin'))
-       
-            if params[:admin]
-              @user.roles << Refinery::Role.find_by_title("GroupAdmin")
-            else
-              @user.roles.delete Refinery::Role.find_by_title("GroupAdmin")
-            end
-      
-          end
-
-          # Prevent the current user from locking themselves out of the User manager or backend
-          if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
-            params[:user].except!(:password, :password_confirmation)
-          end
-
-          if @user.update_attributes params[:user]
-            redirect_to refinery.groups_admin_group_path(@group), :notice => t('updated', :what => @user.username, :scope => 'refinery.crudify') and return
+          redirect_to refinery.groups_admin_group_path(@group), :notice => t('canceled') and return if params[:cancel]    
+          if current_refinery_user.eql?(@user) && current_refinery_user.has_role?(Refinery::Groups.admin_role) 
+            flash.now[:notice] = t('lockout_prevented', :scope => 'refinery.admin.users.update') if !params[:admin]
           else
-            @user.save
-            render :edit
+            if params[:admin]
+              @user.add_role Refinery::Groups.admin_role
+            else
+              @user.roles.delete Refinery::Groups.admin_role
+            end
+          end
+          remove_empty_password_params
+          if @user.update_attributes params[:user]
+            update_successful
+          else
+            update_failed
           end
         end
         
         def destroy
-          user = find_user
-          if user.username.eql?(current_refinery_user.username)
-            flash[:notice] = t("refinery.groups.cant_delete_self")
+          if @user.eql?(current_refinery_user)
+            flash[:notice] = t("refinery.groups.admin.users.errors.cannot_destroy_self")
             redirect_to refinery.groups_admin_group_path(@group) and return
           end
-    
-          if user.group.name.eql?("guest") || current_refinery_user.has_role?('GroupAdmin')
-            flash[:notice] = t("refinery.groups.user_deleted_successfully")
-            user.destroy
+          @user.group = Refinery::Groups::Group.guest_group
+          if @user.save
+              flash[:notice] = t("refinery.groups.admin.users.actions.successfully_deleted")
           else
-            flash[:notice] = t("refinery.groups.user_deleted_from_group_successfully")
-            guest_group = Refinery::Groups::Group.guest_group
-            user.group = guest_group
-            user.save
+              flash[:warning] = t("refinery.groups.admin.errors.unexpected")  
           end
-    
           redirect_to refinery.groups_admin_group_path(@group)
         end
-        
-        protected
+
+     
+      protected
 
          def find_user_with_slug
            begin
@@ -110,35 +75,54 @@ module Refinery
          end
          alias_method_chain :find_user, :slug
 
+
       private
       
-      
-
-        def has_admin
-          @has_admin = Refinery::Groups::Group.find(params[:group_id]).admin
-        end
-
         def find_group
-          if request["action"] == "create"
-            @group = Refinery::Groups::Group.find(params[:user][:group_id])
-          else
-            @group = Refinery::Groups::Group.find(params[:group_id])
-          end
+          @group = Refinery::Groups::Group.find(params[:group_id])
         end
-
-        def find_all_guest_users
-          group_id = Refinery::Groups::Group.find_by_name("guest")
-          @users = Refinery::User.where(:group_id => group_id).order("email").paginate(:page => params[:page])
+      
+        def find_guests
+          @users = Refinery::Groups::Group.guest_group.users.paginate(:page => params[:page])
         end
-
+      
+        def redirect_to_group_show(flash=nil)
+          flash[:error] = flash unless flash.nil?
+          redirect_to refinery.groups_admin_group_path(@group)
+        end
+      
+        def redirect_if_cannot_destroy
+          redirect_to_group_show t("refinery.groups.admin.users.errors.cannot_destroy") unless current_refinery_user.can_admin_group?(@group)
+        end
+      
+        def redirect_if_cannot_edit
+          redirect_to_group_show t("refinery.groups.admin.users.errors.cannot_destroy") unless current_refinery_user.can_edit?(user) || current_refinery_user.can_admin_group?(@group)
+        end
+      
         def redirect_unless_user_editable!
-          user = find_user
-          unless current_refinery_user.can_edit?(user) ||
-            (current_refinery_user.has_role?("GroupAdmin") && user.group && user.group == current_refinery_user.group)
-            redirect_to refinery.admin_users_path and return
-          end
+          redirect_to_group_show unless current_refinery_user.can_edit? @user
         end
-
+      
+        def create_successful
+          redirect_to refinery.groups_admin_group_path(@group), :notice => t('created', :what => @user.username, :scope => 'refinery.crudify')
+        end
+      
+        def create_failed
+          render :action => 'new'
+        end
+      
+        def update_successful
+          redirect_to refinery.groups_admin_group_path(@group), :notice => t('updated', :what => @user.username, :scope => 'refinery.crudify')
+        end
+      
+        def update_failed
+          render :edit
+        end
+      
+        def exclude_password_assignment_when_blank!
+          params[:user].except!(:password, :password_confirmation) if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+        end
+        
       end
     end
   end

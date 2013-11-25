@@ -12,6 +12,7 @@ en:
           cannot_edit:  Sorry! You can't edit this group.
           cannot_destroy: Sorry! You can't delete this group.
           cannot_show: Sorry! You aren't allowed to access this page.
+          unexpected: Unexpected error has occured.
         groups:
           actions:
             create_new: Add New Group
@@ -22,21 +23,27 @@ en:
             sorry_no_results: Sorry! There are no results found.
             no_items_yet: There are no Groups yet. Click "Add New Group" to add your first group.
           group:
-            view_live_html: View this group live <br/><em>(opens in a new window)</em>
-            edit: Edit this group
-            delete: Remove this group
+            view: View this group.
+            edit: Edit this group.
+            delete: Remove this group.
             add_user: Add a new user to this group
-            preview:
+            has_n_users:
               zero: "has no user"
               one: "has 1 user"
               other: "has %{count} users"
           show:
-            expired_since: "expired since %{expiration_date}"
-            expires_at: "expires in %{expiration_date}"
+            expired_since: "expired since %{expires_on}"
+            expires_on: "expires in %{expires_on}"
             users:
               zero: No user
               one: 1 user
               other: "%{count} users"
+        users:
+          errors:
+            cannot_destroy: Sorry! You can't delete this user.
+            cannot_destroy_self: You can't remove yourself from this group !
+          actions:
+            successfully_deleted: User successfully transfered to Guest Group        
     users:
       groups:
         show:
@@ -47,3 +54,5 @@ en:
     attributes:
       refinery/groups/group:
         name: Name
+        description: Description
+        expires_on: Expiration Date

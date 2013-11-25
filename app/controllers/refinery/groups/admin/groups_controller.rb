@@ -32,7 +32,7 @@ module Refinery
         def set_admin
           @user = Refinery::User.find(params[:user_id])
           unless @user.nil?
-            @user.roles << Refinery::Role.find_by_title(Refinery::Groups.admin_role)
+            @user.add_role Refinery::Groups.admin_role
             @user.save
           end
           redirect_to refinery.groups_admin_group_path(@group)

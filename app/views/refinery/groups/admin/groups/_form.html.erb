@@ -15,8 +15,8 @@
   </div>
 
   <div>
-    <%= f.label :expiration_date %>
-    <%= f.date_select(:expiration_date, :start_year => DateTime.now.year) %>
+    <%= f.label :expires_on %>
+    <%= f.date_select(:expires_on, :start_year => DateTime.now.year) %>
   </div>
   
   <%= render '/refinery/admin/form_actions', :f => f,

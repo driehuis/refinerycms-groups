@@ -1,7 +1,15 @@
 %li.clearfix.record{class: cycle("on", "on-hover"), id: dom_id(group)}
-  %span.title= group.name
-  %span.preview= t('.preview', count: group.users.count)
+  %span.title
+    %strong= group.name
+  %span.preview
+    - unless group.expired?
+      = refinery_icon_tag("tick.png") unless group.soon_expired?
+      = refinery_icon_tag('time.png') if group.soon_expired?
+    = t('.has_n_users', count: group.users.count)
   %span.actions
+    = link_to refinery_icon_tag("application_go.png"), refinery.groups_admin_group_path(group),
+      class: "show_group",
+      title: t('.view')
     - unless group.is_guest_group? || !current_refinery_user.is_group_superadmin?
       = link_to refinery_icon_tag("delete.png"), refinery.groups_admin_group_path(group),
         class: "cancel confirm-delete delete_group",
@@ -10,6 +18,4 @@
         method: :delete
       = link_to refinery_icon_tag("application_edit.png"), refinery.edit_groups_admin_group_path(group),
         title: t('.edit')
-    = link_to refinery_icon_tag("application_go.png"), refinery.groups_admin_group_path(group),
-      class: "show_group",
-      title: t('.view_live_html')
+    

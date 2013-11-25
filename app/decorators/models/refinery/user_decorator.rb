@@ -15,7 +15,7 @@ Refinery::User.class_eval do
   
   def can_admin_group?(group)
     return false if group.nil?
-    has_role?(Refinery::Groups.admin_role) && group.users.include?(self) || has_role?(Refinery::Groups.superadmin_role) || has_role?(:superuser) 
+    has_role?(Refinery::Groups.admin_role) && group.users.include?(self) || is_group_superadmin? 
   end
   
   private

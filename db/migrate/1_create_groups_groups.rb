@@ -4,6 +4,8 @@ class CreateGroupsGroups < ActiveRecord::Migration
     create_table :refinery_groups do |t|
       t.string :name
       t.integer :position
+      t.text :description
+      t.date :expires_on
       t.timestamps
     end
 

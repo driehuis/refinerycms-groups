@@ -1,0 +1,5 @@
+= render 'form' 
+
+- if !@group.is_guest_group? && current_refinery_user.is_group_superadmin?
+  %section{id: "records"}
+    = render "show_users", selecting: false

@@ -3,7 +3,7 @@ require_relative '../../lipsum'
 FactoryGirl.define do
   factory :group, :class => Refinery::Groups::Group do
     sequence(:name) { |n| "refinery#{n}" }
-    #expiration_date Time.now
+    #expires_on Time.now
     description Lipsum.generate :words => 50
   end
 

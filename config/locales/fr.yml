@@ -12,6 +12,7 @@ fr:
           cannot_edit:  Désolé, vous n'êtes pas autorisé à modifier ce groupe.
           cannot_destroy: Désolé, vous ne pouvez pas supprimer ce groupe.
           cannot_show: Désolé, vous n'êtes pas habilité à poursuivre cette action.
+          unexpected: Une erreur inconnue est survenue.
         groups:
           actions:
             create_new: Créer un nouveau groupe
@@ -26,17 +27,23 @@ fr:
             edit: Modifier ce groupe
             delete: Supprimer définitivement ce groupe
             add_user: Ajouter un membre à ce groupe
-            preview:
+            has_n_users:
               zero: "n'a aucun membre"
               one: "a 1 membre"
               other: "a %{count} membres"
           show:
-            expired_since: "Expiré depuis %{expiration_date}"
-            expires_at: "Expire dans %{expiration_date}"
+            expired_since: "Expiré depuis %{expires_on}"
+            expires_on: "Expire dans %{expires_on}"
             users:
               zero: Aucun membre
               one: 1 membre
               other: "%{count} membres"
+        users:
+          errors:
+            cannot_destroy: Sorry! You can't delete this user.
+            cannot_destroy_self: You can't remove yourself from this group !
+          actions:
+            successfully_deleted: User successfully transfered to Guest Group
     users:  
       groups:
         show:
@@ -47,3 +54,5 @@ fr:
     attributes:
       refinery/groups/group:
         name: Name
+        description: Description
+        expires_on: Adhésion jusqu'au

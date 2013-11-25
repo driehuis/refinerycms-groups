@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(:version => 20131123142358) do
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
     t.text     "description"
-    t.date     "expiration_date"
+    t.date     "expires_on"
   end
 
   create_table "refinery_images", :force => true do |t|

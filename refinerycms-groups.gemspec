@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   # Runtime dependencies
   s.add_dependency             'refinerycms',         '~> 2.1.0'
   s.add_dependency             'acts_as_indexed'
-  s.add_dependency             'haml'
+  s.add_dependency             'haml-rails'
 
   # Development dependencies (usually used for testing)
   s.add_development_dependency 'refinerycms-testing', '~> 2.1.0'

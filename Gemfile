@@ -2,9 +2,9 @@ source "http://rubygems.org"
 
 gemspec
 
-gem 'acts_as_indexed'
-gem 'haml'
-gem 'rubyzip', '< 1.0.0'
+#gem 'acts_as_indexed'
+#gem 'haml'
+#gem 'rubyzip', '< 1.0.0'
 
 platforms :ruby do
   gem 'sqlite3'

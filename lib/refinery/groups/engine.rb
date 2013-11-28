@@ -1,3 +1,6 @@
+require 'haml-rails'
+require 'acts_as_indexed'
+
 module Refinery
   module Groups
     class Engine < Rails::Engine
@@ -17,6 +20,10 @@ module Refinery
           }
           
         end
+      end
+      
+      config.to_prepare do
+       Decorators.register! Gem::Specification.find_by_name("refinerycms-groups").gem_dir
       end
 
       config.after_initialize do

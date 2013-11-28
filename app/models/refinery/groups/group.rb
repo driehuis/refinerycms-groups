@@ -28,11 +28,11 @@ module Refinery
       end
       
       def expired?
-        expires_on > Time.zone.today
+        expires_on.nil? || expires_on > Time.zone.today
       end
       
       def soon_expired?
-        expires_on > Time.zone.today - Refinery::Groups.reminder.to_i
+        expires_on.nil? || expires_on > Time.zone.today - Refinery::Groups.reminder.to_i
       end
      
       def is_guest_group?

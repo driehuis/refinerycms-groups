@@ -3,7 +3,7 @@ module Refinery
     module Admin
       class GroupsController < ::Refinery::AdminController
 
-        crudify :'refinery/groups/group', :title_attribute => 'name', :xhr_paging => true
+        crudify :'refinery/groups/group', :title_attribute => 'name', :xhr_paging => true, :sortable => false
         
         before_filter :find_group,                  :except => [:index, :new, :create]
         before_filter :find_users,                  :only => [:show, :edit, :update]
@@ -14,28 +14,13 @@ module Refinery
         before_filter :redirect_if_cannot_create,   :only => [:new, :create]
 
         def index
-          if params[:search]
-            @groups = Refinery::Groups::Group.where("lower(name) like ?", "%#{params[:search].downcase}%").paginate(:page => params[:page])
-          else
-            @groups = Refinery::Groups::Group.paginate(:page => params[:page])
-          end
-        end
-
-        def add_users
-          user_ids = params[:user_ids].split(",")
-          @users = Refinery::User.where(:id => user_ids)
-          @group.add_users @users
-          @group.save
-          redirect_to refinery.groups_admin_group_path(@group)
-        end
-
-        def set_admin
-          @user = Refinery::User.find(params[:user_id])
-          unless @user.nil?
-            @user.add_role Refinery::Groups.admin_role
-            @user.save
-          end
-          redirect_to refinery.groups_admin_group_path(@group)
+          @groups = Refinery::Groups::Group
+          @groups = @groups.where("lower(name) like ?", "%#{params[:search].downcase}%") if params[:search]
+          @groups = @groups.active if params[:status].eql?('active')
+          @groups = @groups.soon_expired if params[:status].eql?('soon_expired')
+          @groups = @groups.expired if params[:status].eql?('expired')
+          @groups = @groups.paginate(:page => params[:page])
+          @filtered = params[:status] unless params[:status].eql?('all')
         end
 
 

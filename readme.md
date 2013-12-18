@@ -19,7 +19,7 @@ gem 'refinerycms-groups', '~> 2.1.0'
 
 Now, run ``bundle install``
 
-Next, to install the blog plugin run:
+Next, to install the groups extension run:
 
     rails generate refinery:groups
 

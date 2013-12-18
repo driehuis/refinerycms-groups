@@ -1,5 +1,6 @@
 require 'haml-rails'
 require 'acts_as_indexed'
+require 'jquery-rails'
 
 module Refinery
   module Groups
@@ -21,14 +22,15 @@ module Refinery
           
         end
       end
-      
-      config.to_prepare do
-       Decorators.register! Gem::Specification.find_by_name("refinerycms-groups").gem_dir
-      end
 
+      config.to_prepare do
+       Decorators.register! Refinery::Groups.root
+      end
+      
       config.after_initialize do
         Refinery.register_extension(Refinery::Groups)
       end
+      
     end
   end
 end

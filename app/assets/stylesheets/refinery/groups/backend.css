@@ -1,0 +1,23 @@
+.status img {
+    padding: 2px 4px 4px;
+    vertical-align: middle;
+}
+
+select{
+ background: transparent;
+ width: 210px;
+ padding: 2px;
+ font-size: 16px;
+ line-height: 18px;
+ border: 0;
+ border-radius: 0;
+ height: 26px;
+}
+
+.select_status{
+ margin: 5px 0;
+ width: 210px;
+ height: 26px;
+ overflow: hidden;
+ border: 1px solid #B3B3B3;;
+}

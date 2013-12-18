@@ -9,6 +9,8 @@ FactoryGirl.define do
 
   factory :guest_group, :class => Refinery::Groups::Group do
     name Refinery::Groups.guest_group
+    description 'Guest Group'
+    expires_on Date.new(2099,12,31)
   end
 
 end

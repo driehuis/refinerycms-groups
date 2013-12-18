@@ -6,6 +6,7 @@ class CreateGroupsGroups < ActiveRecord::Migration
       t.integer :position
       t.text :description
       t.date :expires_on
+      t.integer :users_count, default: 0
       t.timestamps
     end
 

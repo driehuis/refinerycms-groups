@@ -6,15 +6,15 @@ module Refinery
         crudify :'refinery/user', :order => 'username ASC', :title_attribute => 'username', :xhr_paging => true
 
         before_filter :find_group
-        before_filter :find_user,                               only: [:edit, :destroy]
+        before_filter :find_user,                               only: [:edit, :destroy, :update]
         before_filter :redirect_to_group_show,                  only: [:index, :show]
         before_filter :redirect_if_cannot_destroy,              only: [:destroy]
         before_filter :redirect_unless_user_editable!,          only: [:edit, :update]
         before_filter :redirect_if_cannot_edit,                 only: [:edit, :update]
         before_filter :exclude_password_assignment_when_blank!, only: [:update]
         before_filter :find_guests,                             only: [:new, :create]
-        
-        
+        after_filter  :assign_group_admin_if_none,              only: [:update, :destroy]
+                
         def new
           @user = Refinery::User.new
         end
@@ -38,10 +38,11 @@ module Refinery
             if params[:admin]
               @user.add_role Refinery::Groups.admin_role
             else
-              @user.roles.delete Refinery::Groups.admin_role
+              #@user.roles.delete Refinery::Groups.admin_role
+              @user.roles.delete Refinery::Role.where(title: Refinery::Groups.admin_role).first
             end
           end
-          remove_empty_password_params
+          
           if @user.update_attributes params[:user]
             update_successful
           else
@@ -54,11 +55,19 @@ module Refinery
             flash[:notice] = t("refinery.groups.admin.users.errors.cannot_destroy_self")
             redirect_to refinery.groups_admin_group_path(@group) and return
           end
-          @user.group = Refinery::Groups::Group.guest_group
-          if @user.save
-              flash[:notice] = t("refinery.groups.admin.users.actions.successfully_deleted")
-          else
+          if @group.eql?(Refinery::Groups::Group.guest_group) || @group.eql?(current_refinery_user.group)
+            if @user.destroy
+              flash[:notice] = t("refinery.groups.admin.users.actions.successfully_destroyed")
+            else
               flash[:warning] = t("refinery.groups.admin.errors.unexpected")  
+            end
+          else
+            @group.remove_user @user
+            if @user.save
+                flash[:notice] = t("refinery.groups.admin.users.actions.successfully_transfered")
+            else
+                flash[:warning] = t("refinery.groups.admin.errors.unexpected")  
+            end
           end
           redirect_to refinery.groups_admin_group_path(@group)
         end
@@ -83,7 +92,8 @@ module Refinery
         end
       
         def find_guests
-          @users = Refinery::Groups::Group.guest_group.users.paginate(:page => params[:page])
+          @users = Refinery::Groups::Group.guest_group.users
+          #binding.pry
         end
       
         def redirect_to_group_show(flash=nil)
@@ -96,11 +106,11 @@ module Refinery
         end
       
         def redirect_if_cannot_edit
-          redirect_to_group_show t("refinery.groups.admin.users.errors.cannot_destroy") unless current_refinery_user.can_edit?(user) || current_refinery_user.can_admin_group?(@group)
+          redirect_to_group_show t("refinery.groups.admin.users.errors.cannot_destroy") unless current_refinery_user.can_edit?(@user) || current_refinery_user.can_admin_group?(@group)
         end
       
         def redirect_unless_user_editable!
-          redirect_to_group_show unless current_refinery_user.can_edit? @user
+          redirect_to_group_show unless current_refinery_user.can_edit?(@user)
         end
       
         def create_successful
@@ -121,6 +131,15 @@ module Refinery
       
         def exclude_password_assignment_when_blank!
           params[:user].except!(:password, :password_confirmation) if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+        end
+        
+        def assign_group_admin_if_none
+          unless @group.is_guest_group? || @group.admin
+            unless (user = @group.users.first).nil?
+              user.add_admin_role
+              user.save
+            end
+          end
         end
         
       end

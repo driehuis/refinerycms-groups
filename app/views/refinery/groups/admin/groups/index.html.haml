@@ -5,3 +5,6 @@
   = render 'actions'
   
 = render '/refinery/admin/make_sortable', :tree => false if !searching? and ::Refinery::Groups::Admin::GroupsController.sortable? and ::Refinery::Groups::Group.count > 1
+
+- content_for :stylesheets do
+  = stylesheet_link_tag 'refinery/groups/backend'

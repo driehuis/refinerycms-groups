@@ -14,6 +14,16 @@ en:
           cannot_show: Sorry! You aren't allowed to access this page.
           unexpected: Unexpected error has occured.
         groups:
+          status:
+            all: All
+            expired: expired
+            soon_expired: soon expired
+            active: active
+            n_expired: "%{count} expired"
+            n_soon_expired: "%{count} soon expired"
+            n_active: "%{count} active"
+          search:
+            filtered_results: "Filtered results: Only '%{filter}' are shown."
           actions:
             create_new: Add New Group
             reorder: Reorder Groups
@@ -25,8 +35,9 @@ en:
           group:
             view: View this group.
             edit: Edit this group.
+            edit_expires_on: Update expires on.
             delete: Remove this group.
-            add_user: Add a new user to this group
+            add_user: Add a user to this group
             has_n_users:
               zero: "has no user"
               one: "has 1 user"
@@ -43,7 +54,8 @@ en:
             cannot_destroy: Sorry! You can't delete this user.
             cannot_destroy_self: You can't remove yourself from this group !
           actions:
-            successfully_deleted: User successfully transfered to Guest Group        
+            successfully_destroyed: User successfully destroyed. 
+            successfully_transfered: User successfully transfered to Guest Group        
     users:
       groups:
         show:

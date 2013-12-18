@@ -1,0 +1,14 @@
+%ul
+  - if ::Refinery::Groups::Admin::GroupsController.searchable?
+    %li= render '/refinery/admin/search', url: refinery.groups_admin_groups_path
+  
+  - if current_refinery_user.is_group_superadmin?
+    %li= link_to t('.create_new'), refinery.new_groups_admin_group_path, class: "add_icon", id: "add_group"
+  
+  - if !searching? && ::Refinery::Groups::Admin::GroupsController.sortable? && ::Refinery::Groups::Group.any?
+    %li
+      = link_to t('.reorder', what: "Groups"), refinery.groups_admin_groups_path, id: "reorder_action", class: "reorder_icon"
+      = link_to t('.reorder_done', what: "Groups"), refinery.groups_admin_groups_path, id: "reorder_action_done", style: "display: none;", class: "reorder_icon"
+
+:javascript
+  $('form.search_form').append("</li>#{escape_javascript(render 'filters')}");

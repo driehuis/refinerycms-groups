@@ -23,3 +23,11 @@ Refinery::I18n.frontend_locales.each do |lang|
     end
   end
 end
+
+# create Guest Group
+Refinery::Groups::Group.create(name: Refinery::Groups.guest_group, description: 'Guests Group', expires_on: Date.new(2099,12,31))
+
+# create roles
+Refinery::Role[Refinery::Groups.admin_role]
+Refinery::Role[Refinery::Groups.superadmin_role]
+

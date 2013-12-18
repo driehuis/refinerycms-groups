@@ -11,15 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131123142358) do
+ActiveRecord::Schema.define(:version => 20131128090533) do
 
   create_table "refinery_groups", :force => true do |t|
     t.string   "name"
     t.integer  "position"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
     t.text     "description"
     t.date     "expires_on"
+    t.integer  "users_count", :default => 0
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   create_table "refinery_images", :force => true do |t|
@@ -34,7 +35,7 @@ ActiveRecord::Schema.define(:version => 20131123142358) do
   end
 
   create_table "refinery_page_part_translations", :force => true do |t|
-    t.integer  "refinery_page_part_id", :null => false
+    t.integer  "refinery_page_part_id"
     t.string   "locale",                :null => false
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
@@ -142,9 +143,6 @@ ActiveRecord::Schema.define(:version => 20131123142358) do
     t.datetime "updated_at",             :null => false
     t.string   "slug"
     t.integer  "group_id"
-    t.string   "token"
-    t.string   "first_name"
-    t.string   "last_name"
   end
 
   add_index "refinery_users", ["group_id"], :name => "index_refinery_users_on_group_id"
@@ -155,13 +153,12 @@ ActiveRecord::Schema.define(:version => 20131123142358) do
     t.integer  "seo_meta_id"
     t.string   "seo_meta_type"
     t.string   "browser_title"
-    t.string   "meta_keywords"
     t.text     "meta_description"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
   end
 
   add_index "seo_meta", ["id"], :name => "index_seo_meta_on_id"
-  add_index "seo_meta", ["seo_meta_id", "seo_meta_type"], :name => "index_seo_meta_on_seo_meta_id_and_seo_meta_type"
+  add_index "seo_meta", ["seo_meta_id", "seo_meta_type"], :name => "id_type_index_on_seo_meta"
 
 end

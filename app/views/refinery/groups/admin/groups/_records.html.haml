@@ -1,11 +1,14 @@
 - if searching?
-  %h2= t('results_for', :scope => 'refinery.admin.search', :query => params[:search])
+  %h2= t('results_for_html', :scope => 'refinery.admin.search', :query => params[:search])
+
+- if @filtered
+  %h3= t('filtered_results', :scope => 'refinery.groups.admin.groups.search', :filter => t(@filtered, scope: 'refinery.groups.admin.groups.status'))
 
 - if @groups.any?
   = render 'groups'
 - else
   %p
-    - if searching?
+    - if searching? || @filtered
       = t('no_results', :scope => 'refinery.admin.search')
     - else
       %strong= t('.no_items_yet')

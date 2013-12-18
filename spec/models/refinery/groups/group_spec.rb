@@ -4,10 +4,33 @@ module Refinery
   module Groups
     describe Group do
       
+      before do
+        @guests_group = create(:guest_group) rescue Refinery::Groups::Group.guest_group
+      end
+      
       it "should be creatable" do
         create(:group)
         expect { create(:group) }.to change(Refinery::Groups::Group, :count).by(1)
       end
+      
+      it "should be expired" do
+        @group = create(:group, name: "GroupExpired", expires_on: Time.zone.today - 1.day)
+        @group.soon_expired?.should be_false
+        @group.expired?.should be_true
+      end
+      
+      it "should be soon expired but not expired" do 
+        @group = create(:group, name: "GroupSoonExpired", expires_on: Time.zone.today + Refinery::Groups.reminder - 2)
+        @group.soon_expired?.should be_true
+        @group.expired?.should be_false
+      end
+      
+      it "should not be expired" do
+        @group = create(:group, name: "GroupNotExpired", expires_on: Time.zone.today + Refinery::Groups.reminder + 2)
+        @group.soon_expired?.should be_false
+        @group.expired?.should be_false
+      end
+        
 
       context "when created with name 'GroupName'" do
         
@@ -64,55 +87,62 @@ module Refinery
         end
 
         it "should add them successfully" do
-          @group.users.count.should == 0
+          @group.users.size.should == 0
           @group.add_user @user1
           @group.add_user @user2
-          @group.users.count.should == 2
+          @group.reload
+          @group.users.size.should == 2
         end
 
         it "should not add duplicate user" do
-          @group.users.count.should == 0
+          @group.users.size.should == 0
           @group.add_user @user1
           @group.add_user @user1
-          @group.users.count.should == 1
+          @group.reload
+          @group.users.size.should == 1
         end
 
         it "should assign only the first user's role to GroupAdmin" do
-          @group.users.count.should == 0
+          @group.users.size.should == 0
           @group.add_user @user1
+          @group.reload
           @group.add_user @user2
           @user1.roles.should include(@group_admin_role)
           @user2.roles.should_not include(@group_admin_role)
         end
 
         it "should remove a user successfully" do
-          @group.users.count.should == 0
+          @group.users.size.should == 0
           @group.add_user @user1
-          @group.users.count.should == 1
+          @group.reload
+          @group.users.size.should == 1
           @group.remove_user @user1
-          @group.users.count.should == 0
+          @group.reload
+          @group.users.size.should == 0
           
         end
 
         it "should remove the GroupAdmin role after the user is removed from a group" do
-          @group.users.count.should == 0
+          @group.users.size.should == 0
           @group.add_user @user1
           @user1.roles.should include(@group_admin_role)
           @group.remove_user @user1
-          @group.users.count.should == 0
+          @group.reload
+          @group.users.size.should == 0
           @user1.roles.should_not include(@group_admin_role)
         end
 
         it "should assign all its users to Guest group after being destroyed" do
-          @group.users.count.should == 0
+          @group.users.size.should == 0
           @group.add_user @user1
           @group.add_user @user2
-          @group.users.count.should == 2
-          uid1 = @user1.id
-          uid2 = @user2.id
+          @group.reload
+          @group.users.size.should == 2
           @group.destroy
-          Refinery::User.where(id: uid1).first.group_id.should == Refinery::Groups::Group.guest_group.id
-          Refinery::User.where(id: uid2).first.group_id.should == Refinery::Groups::Group.guest_group.id
+          @user1.reload
+          @user2.reload
+          @user1.group_id.should == @guests_group.id
+          @user2.group_id.should == @guests_group.id
         end
 
       end

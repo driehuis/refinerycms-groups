@@ -4,12 +4,12 @@ require "spec_helper"
 describe "Group management :" do
   
   before do
+    @guests_group = create(:guest_group) rescue Refinery::Groups::Group.guest_group
     @group1 = create(:group, name: 'GroupSpec1', expires_on: 10.days.from_now)
     @group2 = create(:group, name: 'GroupSpec2', expires_on: 10.days.ago)
     5.times { |i| instance_variable_set("@user#{i}", create(:user))}
     @group1.add_user @user1
     @group2.add_users [@user2, @user3]
-    @guests_group = Refinery::Groups::Group.guest_group
   end
   
   {:refinery_superadmin => " Group Super Admin", :refinery_superuser => "SuperUser"}.each do |user, label|
@@ -84,6 +84,7 @@ describe "Group management :" do
           it "should redirect to index" do
             visit refinery.edit_groups_admin_group_path(@guests_group)
             current_path.should == refinery.groups_admin_groups_path
+            
           end
         end
     

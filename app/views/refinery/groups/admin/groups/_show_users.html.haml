@@ -1,6 +1,5 @@
-
-
-
-= form_tag refinery.add_users_groups_admin_group_path(@group) do
-  = hidden_field_tag "user_ids", "", :id => "user_ids" if selecting
-  = render "users", selecting: selecting
+%section{id: "records"}
+  - if @users.any?
+    .pagination_container{style: "min-height: 246px;"}
+      %ul{style: "padding-left:0px;"}
+        = render partial: 'refinery/groups/admin/users/user', collection: @users, locals: {selecting: false}

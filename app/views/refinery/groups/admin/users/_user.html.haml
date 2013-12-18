@@ -1,0 +1,22 @@
+%li.clearfix.record{id: "sortable_#{user.id}", class: cycle("on", "on-hover")}
+  - if selecting
+    %span.select
+      = check_box_tag 'group[user_ids][]', user.id
+  %span.title
+    %strong
+      = user.username
+    %span.preview
+      = t('preview', :who => user.email, :created_at => l(user.created_at, :format => :short), :scope => 'refinery.admin.users.user')
+    - if user.has_role?(Refinery::Groups.admin_role)
+      %span.groupadmin= t('refinery.groups.groupadmin')
+  - unless selecting 
+    %span.actions
+      = mail_to user.email, refinery_icon_tag('email_go.png'), title: t('email_user', :scope => 'refinery.admin.users.user')
+      = link_to refinery_icon_tag('application_edit.png'), refinery.edit_groups_admin_group_user_path(@group, user),
+        class: "edit_user",
+        title: t('edit', :scope => 'refinery.admin.users') if current_refinery_user.can_edit?(user)
+      = link_to refinery_icon_tag('user_delete.png'), refinery.groups_admin_group_user_path(@group, user),
+        class: "cancel confirm-delete delete_user",
+        title: t('delete', :scope => 'refinery.admin.users'),
+        method: :delete,
+        data: {confirm: t('message', scope: 'refinery.admin.delete', title: user.username)} if current_refinery_user.can_delete?(user)

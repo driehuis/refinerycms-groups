@@ -1,0 +1,2 @@
+%li.select_status
+  = select_tag "status", options_for_select(%w[all active soon_expired expired].collect{|o| [t(o, scope: 'refinery.groups.admin.groups.status'), o]}, params[:status]), onchange: "this.form.submit();"

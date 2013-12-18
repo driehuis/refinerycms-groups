@@ -1,5 +1,23 @@
-= render 'form' 
+%h1= @group.name
 
-- if !@group.is_guest_group? && current_refinery_user.is_group_superadmin?
-  %section{id: "records"}
-    = render "show_users", selecting: false
+#create_user
+  %h2 Add a New User
+  = render 'form' 
+
+%hr
+
+#select_users
+  - if !@group.is_guest_group? && current_refinery_user.is_group_superadmin? && @users.any?
+    %h2 Selectionner des utilisateurs existants    
+    = form_for [refinery, :groups_admin, @group] do |f|
+      - @group.users.each do |user|
+        = hidden_field_tag 'group[user_ids][]', user.id
+      %section{id: "records"}
+        .pagination_container{style: "min-height: 246px;"}
+          %ul{style: "padding-left:0px;"}
+            = render partial: 'refinery/groups/admin/users/user', collection: @users, locals: {selecting: true, f: f}
+          
+      .clearfix
+      
+      = render '/refinery/admin/form_actions', :f => f, continue_editing: false, hide_delete: true
+            

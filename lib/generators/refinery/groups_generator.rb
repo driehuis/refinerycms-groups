@@ -15,8 +15,8 @@ module Refinery
       append_file 'db/seeds.rb', :verbose => true do
         <<-EOH
 
-          # Added by Refinery CMS Groups extension
-          Refinery::Groups::Engine.load_seed
+# Added by Refinery CMS Groups extension
+Refinery::Groups::Engine.load_seed
         EOH
       end
     end

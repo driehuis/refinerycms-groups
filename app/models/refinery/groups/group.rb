@@ -14,7 +14,7 @@ module Refinery
 
       acts_as_indexed :fields => [:name]
 
-      default_scope order("name")
+      default_scope { order(:name) }
 
       before_destroy :destroyable?
       before_destroy :assign_users_to_guest_group

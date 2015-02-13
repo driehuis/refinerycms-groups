@@ -30,6 +30,14 @@ Refinery::User.class_eval do
     @has_admin_role
   end
   
+  Refinery::Admin::UsersController.class_eval do
+    protected
+    def user_params_with_groups
+      user_params_without_groups.permit(:group_id, :has_admin_role)
+    end
+    alias_method_chain :user_params, :groups
+  end
+
   private
   
   def assign_to_guest_group

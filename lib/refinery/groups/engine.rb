@@ -15,10 +15,11 @@ module Refinery
           plugin.name = "groups"
           plugin.url = proc { Refinery::Core::Engine.routes.url_helpers.groups_admin_groups_path }
           plugin.pathname = root
-          plugin.activity = {
-            :class_name => :'refinery/groups/group',
-            :title => 'name'
-          }
+          # activity is deprecated in refinerycms 3.0.0, will be removed from 3.1.0
+          #plugin.activity = {
+          #  :class_name => :'refinery/groups/group',
+          #  :title => 'name'
+          #}
           
         end
       end

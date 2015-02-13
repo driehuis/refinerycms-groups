@@ -3,7 +3,7 @@ Refinery::User.class_eval do
   belongs_to :group, :class_name => "Refinery::Groups::Group", counter_cache: true
   delegate :name, :to => :group, :prefix => true, :allow_nil => true
   
-  attr_accessible :group_id, :has_admin_role 
+  #attr_accessible :group_id, :has_admin_role 
   
   before_save :assign_to_guest_group, unless:  Proc.new { |u| u.attribute_present?(:group_id) }
   before_save :assign_group_admin_role, unless:  Proc.new { |u| u.has_admin_role? }

@@ -4,7 +4,7 @@ module Refinery
       
       self.table_name = 'refinery_groups'
 
-      attr_accessible :name, :position, :description, :expires_on, :user_ids
+      #attr_accessible :name, :position, :description, :expires_on, :user_ids
       
 
       validates :name, :presence => true, :uniqueness => true

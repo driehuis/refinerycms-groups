@@ -69,6 +69,10 @@ module Refinery
             redirect_to refinery.root_path, :flash => { :error => t("refinery.groups.admin.errors.cannot_show") } 
           end
         end
+
+        def group_params
+          params.require(:group).permit(:name, :position, :description, :expires_on, :user_ids)
+        end
        
       end
     end

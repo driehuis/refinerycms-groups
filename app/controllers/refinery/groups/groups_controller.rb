@@ -29,6 +29,10 @@ module Refinery
         @page = ::Refinery::Page.where(:link_url => "/groups").first
       end
 
+      def group_params
+        params.require(:group).permit(:name, :position, :description, :expires_on, :user_ids)
+      end
+
     end
   end
 end
